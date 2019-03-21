@@ -1,0 +1,124 @@
+﻿<#@ template debug="true" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Xml" #>  
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Xml" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#
+XmlDocument doc;
+{
+	string path = this.Host.ResolvePath("");
+	System.IO.Directory.SetCurrentDirectory(path);
+	doc = new XmlDocument();
+	doc.Load(path+"\\Layout.xml");
+}
+
+var root = doc.DocumentElement;
+
+var title = root.Attributes["Title"].Value;
+var fullClassName = root.Attributes["Class"].Value;
+var className = fullClassName.Split('.').Last();
+var namespaceStr = fullClassName.Replace("."+className, "");
+var menuItem = root.Attributes["MenuItem"] != null ? root.Attributes["MenuItem"].Value:"Window";
+#>
+<#
+Action<XmlNode> DrawFields = null;DrawFields = p=>{#>
+<#  if(p.Attributes["Name"] != null){#>
+<#      var fieldName = p.Attributes["Name"].Value;#>
+<#      var fieldType = p.Name;#>
+<#      
+		if(fieldType.Contains("ObjectField")){
+			var split = fieldType.Split('_','-');
+			fieldType = split[0] + "<" + string.Join(", ", split.Skip(1).ToArray()) + ">";
+		}
+#>
+public virtual <#=fieldType#>	<#=fieldName#>	{ get; set; }
+<#  }#>
+<#  foreach(var child in p.ChildNodes){#>
+<#	    DrawFields((XmlNode)child);#>
+<#  }#>
+<#};
+
+#><#
+Action<XmlNode, bool> DrawNode = null;DrawNode = (p, isArray)=>{#>
+<#  var variableName = "p"+CurrentIndent.Length;#>
+<#      var fieldType = p.Name;#>
+<#      
+		if(fieldType.Contains("ObjectField")){
+			var split = fieldType.Split('_','-');
+			fieldType = split[0] + "<" + string.Join(", ", split.Skip(1).ToArray()) + ">";
+		}
+#>
+New<<#=fieldType#>>(<#=variableName#>=>{
+<#  PushIndent("\t");#>
+<#  foreach(XmlAttribute attribute in p.Attributes){#>
+<#      if(attribute.Name != "Name"){#>
+<#=variableName#>.<#=attribute.Name#>="<#=attribute.Value#>";
+<#      }#>
+<#      else{#>
+<#=attribute.Value#>=<#=variableName#>;
+<#      }#>
+<#  }#>
+<#  if(p.ChildNodes.Count > 0){#>
+<#=variableName#>.Children.AddRange(new Control[]{
+<#		PushIndent("\t");#>
+<#		foreach(var child in p.ChildNodes)#>
+<#			DrawNode((XmlNode)child, true);#>
+<#		PopIndent();#>
+});
+<#  }#>
+<#  PopIndent();#>
+})<#=isArray==false?";":"," #>
+<#};
+
+#>
+using System;
+using System.Collections.Generic;
+using Assets.Scripts.ImGuiFx;
+using Assets.Scripts.ImGuiFx.Controls;
+using Assets.Scripts.ImGuiFx.Layouts;
+using UnityEditor;
+using UnityEngine;
+
+namespace <#=namespaceStr#> {
+	public partial class <#=className#> : EditorWindowHelper {
+
+		[MenuItem("<#=menuItem#>/<#=title#>")]
+		public static void ShowWindow() {
+			StaticStart<<#=className#>>();
+		}
+
+<#
+		PushIndent("\t");
+		PushIndent("\t");
+		DrawFields(root);
+		PopIndent();
+		PopIndent();
+#>
+
+		private static T New<T>(Action<T> f) where T:new(){
+			var o = new T();
+			f(o);
+			return o;
+		}
+
+		protected override IEnumerable<Control> OnInitialize(){
+			Title = "<#=title#>";
+			yield return <# 
+				PushIndent("\t");
+				PushIndent("\t");
+				PushIndent("\t");
+				DrawNode(root.FirstChild, false);
+				PopIndent();
+				PopIndent();
+				PopIndent();
+			#>
+		}
+	}
+}
+<#+
+	public bool UseNewPrefix(XmlNode node){
+		return true;
+	}
+#>

@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ImGuiFx Title="DesignerUI" Class="Assets.Scripts.EditorUtils.DesignerUi.DesignerUiMain" MenuItem="IdMei">
+  <VerticalLayout>
+    <VerticalLayout Width="500">
+      <HorizontalLayout>
+        <Label Content="Sun Rotation (" />
+        <Label Content="123" Name="SunRotationLabel" />
+        <Label Content=")" />
+        <HorizontalSlider Min="0" Max="540" Width="500" />
+      </HorizontalLayout>
+      <HorizontalLayout>
+        <Label Content="Sun Height (" />
+        <Label Content="123" Name="SunHeightLabel" />
+        <Label Content=")" />
+        <HorizontalSlider Min="0" Max="90" Width="500" />
+      </HorizontalLayout>
+      <HorizontalLayout>
+        <ObjectField_GameObject Name="MonitoringObjectField" AllowSceneObjects="true" Label="Monitoring Object" Change="ObjectFieldOnChange" />
+        <Button Name="CenterButton" Content="Center Object" Hidden="true" />
+      </HorizontalLayout>
+    </VerticalLayout>
+    <HorizontalLayout Name="SkyboxesContainer" />
+    <HorizontalLayout Name="InteriorsContainer" />
+    <Button Name="UnselectEverythingButton" Content="Unselect everything" Width="200" />
+  </VerticalLayout>
+</ImGuiFx>

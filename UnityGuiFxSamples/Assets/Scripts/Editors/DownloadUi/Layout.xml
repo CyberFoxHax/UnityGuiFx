@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ImGuiFx Title="DownloadUI" Class="Assets.Scripts.EditorUtils.DownloadUi.DownloadUiMain" MenuItem="IdMei">
+  <VerticalLayout>
+    <Label Content="Model list:" />
+    <VerticalLayout Name ="_modelsList" />
+  </VerticalLayout>
+</ImGuiFx>

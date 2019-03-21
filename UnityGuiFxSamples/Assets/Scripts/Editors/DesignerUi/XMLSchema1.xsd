@@ -1,0 +1,49 @@
+﻿<xsd:schema id="XMLSchema1"
+    targetNamespace="http://tempuri.org/XMLSchema1.xsd"
+    elementFormDefault="qualified"
+    xmlns="http://tempuri.org/XMLSchema1.xsd"
+    xmlns:mstns="http://tempuri.org/XMLSchema1.xsd"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+  <xsd:element name="ImGuiFx" type="mstns:ImGuiFx" />
+  <xsd:complexType name="ImGuiFx">
+    <xsd:attribute name="Title" type="xsd:string" />
+    <xsd:attribute name="Class" type="xsd:string"/>
+    <xsd:attribute name="MenuItem" type="xsd:string"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="Element">
+    <xsd:attribute name="Width" type="xsd:float" />
+    <xsd:attribute name="Height" type="xsd:float" />
+    <xsd:attribute name="Name" type="xsd:float" />
+    <xsd:attribute name="Hidden" type="xsd:boolean" />
+  </xsd:complexType>
+
+  <xsd:element name="HorizontalLayout" type="mstns:Layout" />
+  <xsd:element name="VerticalLayout" type="mstns:Layout" />
+  <xsd:complexType name="Layout">
+    <xsd:complexContent>
+      <xsd:restriction base="Element" />
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="Label" type="mstns:Label" />
+  <xsd:complexType name="Label">
+    <xsd:attribute name="Content" />
+  </xsd:complexType>
+
+  <xsd:element name="ObjectField" type="mstns:ObjectField" />
+  <xsd:complexType name="ObjectField">
+    <xsd:attribute name="Object" />
+    <xsd:attribute name="AllowSceneObjects" type="xsd:boolean" />
+    <xsd:attribute name="Label" type="xsd:string" />
+    <xsd:attribute name="Change" />
+  </xsd:complexType>
+
+  <xsd:element name="Button" type="mstns:Button" />
+  <xsd:complexType name="Button">
+    <xsd:attribute name="Content" />
+  </xsd:complexType>
+
+
+</xsd:schema>
